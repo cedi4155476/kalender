@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_GUI.ui'
 #
-# Created: Tue Mar  1 15:27:53 2016
+# Created: Thu Mar  3 12:13:42 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -59,9 +59,9 @@ class Ui_MainWindow(object):
         self.monthLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.monthLabel.setObjectName(_fromUtf8("monthLabel"))
         self.horizontalLayout_2.addWidget(self.monthLabel)
-        self.NextB = QtGui.QPushButton(self.month)
-        self.NextB.setObjectName(_fromUtf8("NextB"))
-        self.horizontalLayout_2.addWidget(self.NextB)
+        self.nextB = QtGui.QPushButton(self.month)
+        self.nextB.setObjectName(_fromUtf8("nextB"))
+        self.horizontalLayout_2.addWidget(self.nextB)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.monthTW = QtGui.QTableWidget(self.month)
         self.monthTW.setFrameShape(QtGui.QFrame.NoFrame)
@@ -73,11 +73,11 @@ class Ui_MainWindow(object):
         self.monthTW.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.monthTW.setProperty("showDropIndicator", False)
         self.monthTW.setDragDropOverwriteMode(False)
-        self.monthTW.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.monthTW.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.monthTW.setShowGrid(False)
         self.monthTW.setGridStyle(QtCore.Qt.NoPen)
         self.monthTW.setCornerButtonEnabled(False)
-        self.monthTW.setRowCount(6)
+        self.monthTW.setRowCount(7)
         self.monthTW.setColumnCount(7)
         self.monthTW.setObjectName(_fromUtf8("monthTW"))
         item = QtGui.QTableWidgetItem()
@@ -133,9 +133,9 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Kalender", None))
         self.label.setText(_translate("MainWindow", "Filter", None))
         self.label_2.setText(_translate("MainWindow", "Suche", None))
-        self.previousB.setText(_translate("MainWindow", "PushButton", None))
+        self.previousB.setText(_translate("MainWindow", "Letzter Monat", None))
         self.monthLabel.setText(_translate("MainWindow", "Monat", None))
-        self.NextB.setText(_translate("MainWindow", "PushButton", None))
+        self.nextB.setText(_translate("MainWindow", "Nächster Monat", None))
         item = self.monthTW.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "1", None))
         item = self.monthTW.horizontalHeaderItem(0)

@@ -79,57 +79,111 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return d
 
     def initialise(self):
-        self.days = []
         self.item = None
         self.d = 4
+        self.month = MONTHS[9]
+        self.year = 580
 
-    def create(self, year=580, month=MONTHS[9]):
+    def add_header(self):
+        self.monthTW.setItem(0, 0, self.getValidQTWI("Montag"))
+        self.monthTW.setItem(0, 1, self.getValidQTWI("Dienstag"))
+        self.monthTW.setItem(0, 2, self.getValidQTWI("Mittwoch"))
+        self.monthTW.setItem(0, 3, self.getValidQTWI("Donnerstag"))
+        self.monthTW.setItem(0, 4, self.getValidQTWI("Freitag"))
+        self.monthTW.setItem(0, 5, self.getValidQTWI("Samstag"))
+        self.monthTW.setItem(0, 6, self.getValidQTWI("Sonntag"))
 
-        self.month = month
-        self.year = year
+    def getValidQTWI(self, value):
+        """
+        Make a valid qtablewidgetitem so it doesn't crash if it's empty
+        """
+        if value:
+            return QTableWidgetItem(value)
+        else:
+            return QTableWidgetItem()
+
+    def create(self):
+        if self.d == 7:
+            self.d = 0
+        self.monthTW.clear()
+        self.monthTW.setColumnCount(7)
+        self.monthTW.setRowCount(7)
+        self.add_header()
         self.monthLabel.setText(self.month[0] + " " + unicode(self.year))
-
+        self.days = []
         i = 0
         x = 1
         y = 0
-        last_days = 0
+        last_days = -1
         if self.d != 0:
-            last = True
             last_days = 7 - self.d
-        else:
-            last = False
-        all_days = self.month[2] + last_days + 1
+            if self.month[1] > 1:
+                last_dates = MONTHS[self.month[1] - 1][2]
+            else:
+                last_dates = MONTHS[12][2]
+            last_dates = range(last_dates - self.d, last_dates)
+
+        all_days = self.month[2] + self.d
         next_days = 7 - (all_days % 7)
         all_days = next_days + all_days
         while i in range(all_days):
-            if last:
-                last_dates = MONTHS[self.month[1] - 1][2]
-                last_dates = range(last_dates - last_days, last_dates + 1)
-                last = False
-
             if y > 6:
                 x += 1
                 y = 0
-                last = False
             daywidget = QWidget()
             layout = QBoxLayout(2, daywidget)
             daywidget.setLayout(layout)
-            if i <= last_days:
-                daylabel = QLabel("<font color='Gray'>" + unicode(last_dates[i]) + "." + unicode(MONTHS[self.month[1] - 1][1]) + "." + unicode(self.year) + "</font>")
+            if i < self.d:
+                if self.month[1] > 1:
+                    daylabel = QLabel("<font color='Gray'>" + unicode(last_dates[i] + 1) + "." + unicode(MONTHS[self.month[1] - 1][1]) + "." + unicode(self.year) + "</font>")
+                else:
+                    daylabel = QLabel("<font color='Gray'>" + unicode(last_dates[i] + 1) + "." + unicode(MONTHS[12][1]) + "." + unicode(self.year) + "</font>")
             elif i >= all_days - next_days:
-                daylabel = QLabel("<font color='Gray'>" + unicode(i - self.month[2] - last_days) + "." + unicode(MONTHS[self.month[1] + 1][1]) + "." + unicode(self.year) + "</font>")
+                if all_days - i == 7:
+                    return
+                if self.month[1] < 12:
+                    daylabel = QLabel("<font color='Gray'>" + unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[self.month[1] + 1][1]) + "." + unicode(self.year) + "</font>")
+                else:
+                    daylabel = QLabel("<font color='Gray'>" + unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[1][1]) + "." + unicode(self.year) + "</font>")
             else:
-                daylabel = QLabel(unicode(i - last_days) + "." + unicode(self.month[1]) + "." + unicode(self.year))
+                daylabel = QLabel(unicode(i - (self.d - 1)) + "." + unicode(self.month[1]) + "." + unicode(self.year))
             layout.addWidget(daylabel)
             self.days.append(daywidget)
             self.monthTW.setCellWidget(x, y, daywidget)
             y += 1
             i += 1
 
+    def next_month(self):
+        self.d = (self.month[2] + self.d) % 7
+        if self.month[1] < 12:
+            self.month = MONTHS[self.month[1] + 1]
+        else:
+            self.month = MONTHS[1]
+            self.year = self.year + 1
+
+    def previous_month(self):
+        if self.month[1] > 1:
+            self.month = MONTHS[self.month[1] - 1]
+        else:
+            self.month = MONTHS[12]
+            self.year = self.year - 1
+        self.d = 7 - ((self.month[2] + (7 - self.d)) % 7)
+
     @pyqtSignature("")
-    def on_tableWidget_itemSelectionChanged(self):
+    def on_nextB_clicked(self):
+        self.next_month()
+        self.create()
+
+    @pyqtSignature("")
+    def on_previousB_clicked(self):
+        self.previous_month()
+        self.create()
+
+    @pyqtSignature("")
+    def on_monthTW_itemSelectionChanged(self):
         """
-        change current editable
+        change current
         """
-        if self.tableWidget.selectedItems():
-            self.item = self.tableWidget.selectedItems()[0]
+        if self.monthTW.selectedItems():
+            self.item = self.monthTW.selectedItems()
+            print self.item
