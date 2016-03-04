@@ -8,11 +8,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 from ui_GUI import Ui_MainWindow
-from months import Month
 
 MONTHS = [["None", 0, 0],
           ["Januar", 1, 31],
-          ["Februar", 2, 28],
+          ["Februar", 2, 29],
           ["Maerz", 3, 31],
           ["April", 4, 30],
           ["May", 5, 31],
@@ -135,16 +134,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             daywidget.setLayout(layout)
             if i < self.d:
                 if self.month[1] > 1:
-                    daylabel = QLabel("<font color='Gray'>" + unicode(last_dates[i] + 1) + "." + unicode(MONTHS[self.month[1] - 1][1]) + "." + unicode(self.year) + "</font>")
+                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(MONTHS[self.month[1] - 1][1]) + "." + unicode(self.year))
+                    daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
-                    daylabel = QLabel("<font color='Gray'>" + unicode(last_dates[i] + 1) + "." + unicode(MONTHS[12][1]) + "." + unicode(self.year) + "</font>")
+                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(MONTHS[12][1]) + "." + unicode(self.year))
+                    daylabel.setStyleSheet("QLabel { color : gray; }")
             elif i >= all_days - next_days:
                 if all_days - i == 7:
                     return
                 if self.month[1] < 12:
-                    daylabel = QLabel("<font color='Gray'>" + unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[self.month[1] + 1][1]) + "." + unicode(self.year) + "</font>")
+                    daylabel = QLabel(unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[self.month[1] + 1][1]) + "." + unicode(self.year))
+                    daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
-                    daylabel = QLabel("<font color='Gray'>" + unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[1][1]) + "." + unicode(self.year) + "</font>")
+                    daylabel = QLabel(unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(MONTHS[1][1]) + "." + unicode(self.year))
+                    daylabel.setStyleSheet("QLabel { color : gray; }")
             else:
                 daylabel = QLabel(unicode(i - (self.d - 1)) + "." + unicode(self.month[1]) + "." + unicode(self.year))
             layout.addWidget(daylabel)
@@ -160,6 +163,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.month = MONTHS[1]
             self.year = self.year + 1
+            if self.year % 4 == 0:
+                MONTHS[2][2] = 29
+            else:
+                MONTHS[2][2] = 28
 
     def previous_month(self):
         if self.month[1] > 1:
@@ -167,6 +174,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.month = MONTHS[12]
             self.year = self.year - 1
+            if self.year % 4 == 0:
+                MONTHS[2][2] = 29
+            else:
+                MONTHS[2][2] = 28
         self.d = 7 - ((self.month[2] + (7 - self.d)) % 7)
 
     @pyqtSignature("")
@@ -179,11 +190,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.previous_month()
         self.create()
 
-    @pyqtSignature("")
-    def on_monthTW_itemSelectionChanged(self):
-        """
-        change current
-        """
-        if self.monthTW.selectedItems():
-            self.item = self.monthTW.selectedItems()
-            print self.item
+    def on_monthTW_cellClicked(self, x, y):
+        widget = self.monthTW.cellWidget(x, y)
+        if widget is None:
+            return
+
+        print "works"

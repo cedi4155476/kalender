@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_GUI.ui'
 #
-# Created: Thu Mar  3 12:13:42 2016
+# Created: Fri Mar  4 13:41:00 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.nextB.setObjectName(_fromUtf8("nextB"))
         self.horizontalLayout_2.addWidget(self.nextB)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
-        self.monthTW = QtGui.QTableWidget(self.month)
+        self.monthTW = MyTableWidget(self.month)
         self.monthTW.setFrameShape(QtGui.QFrame.NoFrame)
         self.monthTW.setFrameShadow(QtGui.QFrame.Plain)
         self.monthTW.setLineWidth(0)
@@ -73,7 +73,7 @@ class Ui_MainWindow(object):
         self.monthTW.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.monthTW.setProperty("showDropIndicator", False)
         self.monthTW.setDragDropOverwriteMode(False)
-        self.monthTW.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.monthTW.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.monthTW.setShowGrid(False)
         self.monthTW.setGridStyle(QtCore.Qt.NoPen)
         self.monthTW.setCornerButtonEnabled(False)
@@ -172,3 +172,4 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.month), _translate("MainWindow", "Monatsansicht", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2", None))
 
+from myTableWidget import MyTableWidget
