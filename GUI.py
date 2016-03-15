@@ -49,7 +49,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.installEventFilter()
         self.make_connections()
-        self.initialised = False
+        self.initialisedmonth = False
+        self.initialisedstories = False
 
     def db_connect(self):
         """
@@ -88,25 +89,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             d[col[0]] = row[idx]
         return d
 
-    def on_tabWidget_currentChanged(self, tab):
-        if tab == 0:
-            print tab
-        elif tab == 1:
-            if not self.initialised:
-                self.initialise()
-            self.create()
-
-    def initialise(self):
-        self.item = None
-        self.d = 4
-        self.month = mMONTHS[9]
-        self.year = 580
-        self.initialised = True
-
-    def add_header(self):
-        for i in range(len(mDAYS)):
-            self.monthTW.setItem(0, i, self.getValidQTWI(mDAYS[i]))
-
     def getValidQTWI(self, value):
         """
         Make a valid qtablewidgetitem so it doesn't crash if it's empty
@@ -116,12 +98,76 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             return QTableWidgetItem()
 
-    def create(self):
+    @pyqtSignature("QAction*")
+    def on_menuBar_triggered(self, action):
+        """
+        menu bar actions
+        """
+        if action.whatsThis() == "close":
+            QApplication.quit()
+        elif action.whatsThis() == "addstory":
+            story = Story(self.c, self.conn, self)
+            ret = story.exec_()
+            if ret == QDialog.Accepted:
+                self.conn.commit()
+            else:
+                self.conn.rollback()
+
+    def on_tabWidget_currentChanged(self, tab):
+        if tab == 0:
+            if not self.initialisedstories:
+                self.initialise_stories()
+            self.create_stories()
+
+        elif tab == 1:
+            if not self.initialisedmonth:
+                self.initialise_month()
+            self.create_month()
+
+    def initialise_stories(self):
+        self.c.execute('''SELECT titel, kurzinfo, pfad FROM Geschichte''')
+        self.storydatas = self.c.fetchall()
+        self.initialisedstories = True
+
+    def create_stories(self):
+        i = 0
+        self.storyTW.setRowCount(len(self.storydatas))
+        for story in self.storydatas:
+            editwidget = QWidget()
+            editlayout = QBoxLayout(2, editwidget)
+            editwidget.setLayout(editlayout)
+            editbutton = QPushButton("bearbeiten")
+            editlayout.addWidget(editbutton)
+
+            deletewidget = QWidget()
+            deletelayout = QBoxLayout(2, deletewidget)
+            deletewidget.setLayout(deletelayout)
+            deletebutton = QPushButton("bearbeiten")
+            deletelayout.addWidget(deletebutton)
+            self.storyTW.setItem(i, 0, self.getValidQTWI(unicode(story['titel'])))
+            self.storyTW.setItem(i, 1, self.getValidQTWI(unicode(story['kurzinfo'])))
+            self.storyTW.setItem(i, 2, self.getValidQTWI("Datei"))
+            self.storyTW.setCellWidget(i, 3, editwidget)
+            self.storyTW.setCellWidget(i, 4, deletewidget)
+            i += 1
+
+    def initialise_month(self):
+        self.item = None
+        self.d = 4
+        self.month = mMONTHS[9]
+        self.year = 580
+        self.initialisedmonth = True
+
+    def add_header_month(self):
+        for i in range(len(mDAYS)):
+            self.monthTW.setItem(0, i, self.getValidQTWI(mDAYS[i]))
+
+    def create_month(self):
         if self.d == len(mDAYS):
             self.d = 0
         self.monthTW.clear()
         self.monthTW.setColumnCount(len(mDAYS))
-        self.add_header()
+        self.add_header_month()
         self.monthLabel.setText(self.month[0] + " " + unicode(self.year))
         self.monthTW.setRowCount(math.ceil((self.month[2] + self.d) * 1.0 / len(mDAYS)) + 1)
         self.days = []
@@ -198,27 +244,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSignature("")
     def on_nextB_clicked(self):
         self.next_month()
-        self.create()
+        self.create_month()
 
     @pyqtSignature("")
     def on_previousB_clicked(self):
         self.previous_month()
-        self.create()
-
-    @pyqtSignature("QAction*")
-    def on_menuBar_triggered(self, action):
-        """
-        menu bar actions
-        """
-        if action.whatsThis() == "close":
-            QApplication.quit()
-        elif action.whatsThis() == "addstory":
-            story = Story(self.c, self.conn, self)
-            ret = story.exec_()
-            if ret == QDialog.Accepted:
-                self.conn.commit()
-            else:
-                self.conn.rollback()
+        self.create_month()
 
     def on_monthTW_cellDoubleClicked(self, x, y):
         widget = self.monthTW.cellWidget(x, y)
