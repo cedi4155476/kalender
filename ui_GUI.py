@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_GUI.ui'
 #
-# Created: Fri Mar  4 13:41:00 2016
+# Created: Tue Mar 15 14:05:32 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -125,6 +125,22 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.tabWidget)
         self.horizontalLayout.setStretch(1, 5)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.menuBar = QtGui.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 773, 21))
+        self.menuBar.setObjectName(_fromUtf8("menuBar"))
+        self.menuData = QtGui.QMenu(self.menuBar)
+        self.menuData.setObjectName(_fromUtf8("menuData"))
+        self.menuEdit = QtGui.QMenu(self.menuBar)
+        self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
+        MainWindow.setMenuBar(self.menuBar)
+        self.actionSchliessen = QtGui.QAction(MainWindow)
+        self.actionSchliessen.setObjectName(_fromUtf8("actionSchliessen"))
+        self.actionAddStory = QtGui.QAction(MainWindow)
+        self.actionAddStory.setObjectName(_fromUtf8("actionAddStory"))
+        self.menuData.addAction(self.actionSchliessen)
+        self.menuEdit.addAction(self.actionAddStory)
+        self.menuBar.addAction(self.menuData.menuAction())
+        self.menuBar.addAction(self.menuEdit.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -171,5 +187,11 @@ class Ui_MainWindow(object):
         self.monthTW.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.month), _translate("MainWindow", "Monatsansicht", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2", None))
+        self.menuData.setTitle(_translate("MainWindow", "Datei", None))
+        self.menuEdit.setTitle(_translate("MainWindow", "Bearbeiten", None))
+        self.actionSchliessen.setText(_translate("MainWindow", "Schliessen", None))
+        self.actionSchliessen.setWhatsThis(_translate("MainWindow", "close", None))
+        self.actionAddStory.setText(_translate("MainWindow", "Geschichte hinzufügen", None))
+        self.actionAddStory.setWhatsThis(_translate("MainWindow", "addstory", None))
 
 from myTableWidget import MyTableWidget

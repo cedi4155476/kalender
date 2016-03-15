@@ -238,6 +238,46 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>773</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuData">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionSchliessen"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Bearbeiten</string>
+    </property>
+    <addaction name="actionAddStory"/>
+   </widget>
+   <addaction name="menuData"/>
+   <addaction name="menuEdit"/>
+  </widget>
+  <action name="actionSchliessen">
+   <property name="text">
+    <string>Schliessen</string>
+   </property>
+   <property name="whatsThis">
+    <string>close</string>
+   </property>
+  </action>
+  <action name="actionAddStory">
+   <property name="text">
+    <string>Geschichte hinzufügen</string>
+   </property>
+   <property name="whatsThis">
+    <string>addstory</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
