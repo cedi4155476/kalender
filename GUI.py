@@ -4,6 +4,7 @@ Module implementing MainWindow.
 """
 import sqlite3
 import os.path
+import math
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -48,8 +49,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.installEventFilter()
         self.make_connections()
-        self.initialise()
-        self.create()
+        self.initialised = False
 
     def db_connect(self):
         """
@@ -88,20 +88,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             d[col[0]] = row[idx]
         return d
 
+    def on_tabWidget_currentChanged(self, tab):
+        if tab == 0:
+            print tab
+        elif tab == 1:
+            if not self.initialised:
+                self.initialise()
+            self.create()
+
     def initialise(self):
         self.item = None
         self.d = 4
         self.month = mMONTHS[9]
         self.year = 580
+        self.initialised = True
 
     def add_header(self):
-        self.monthTW.setItem(0, 0, self.getValidQTWI(mDAYS[0]))
-        self.monthTW.setItem(0, 1, self.getValidQTWI(mDAYS[1]))
-        self.monthTW.setItem(0, 2, self.getValidQTWI(mDAYS[2]))
-        self.monthTW.setItem(0, 3, self.getValidQTWI(mDAYS[3]))
-        self.monthTW.setItem(0, 4, self.getValidQTWI(mDAYS[4]))
-        self.monthTW.setItem(0, 5, self.getValidQTWI(mDAYS[5]))
-        self.monthTW.setItem(0, 6, self.getValidQTWI(mDAYS[6]))
+        for i in range(len(mDAYS)):
+            self.monthTW.setItem(0, i, self.getValidQTWI(mDAYS[i]))
 
     def getValidQTWI(self, value):
         """
@@ -113,31 +117,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return QTableWidgetItem()
 
     def create(self):
-        if self.d == 7:
+        if self.d == len(mDAYS):
             self.d = 0
         self.monthTW.clear()
-        self.monthTW.setColumnCount(7)
-        self.monthTW.setRowCount(7)
+        self.monthTW.setColumnCount(len(mDAYS))
         self.add_header()
         self.monthLabel.setText(self.month[0] + " " + unicode(self.year))
+        self.monthTW.setRowCount(math.ceil((self.month[2] + self.d) * 1.0 / len(mDAYS)) + 1)
         self.days = []
         i = 0
         x = 1
         y = 0
         last_days = -1
         if self.d != 0:
-            last_days = 7 - self.d
+            last_days = len(mDAYS) - self.d
             if self.month[1] > 1:
                 last_dates = mMONTHS[self.month[1] - 1][2]
             else:
-                last_dates = mMONTHS[12][2]
+                last_dates = mMONTHS[(len(mMONTHS) - 1)][2]
             last_dates = range(last_dates - self.d, last_dates)
 
         all_days = self.month[2] + self.d
-        next_days = 7 - (all_days % 7)
+        next_days = len(mDAYS) - (all_days % len(mDAYS))
         all_days = next_days + all_days
         while i in range(all_days):
-            if y > 6:
+            if y > (len(mDAYS) - 1):
                 x += 1
                 y = 0
             daywidget = QWidget()
@@ -148,12 +152,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[self.month[1] - 1][1]) + "." + unicode(self.year))
                     daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
-                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[12][1]) + "." + unicode(self.year))
+                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[(len(mMONTHS) - 1)][1]) + "." + unicode(self.year))
                     daylabel.setStyleSheet("QLabel { color : gray; }")
             elif i >= all_days - next_days:
-                if all_days - i == 7:
+                if all_days - i == len(mDAYS):
                     return
-                if self.month[1] < 12:
+                if self.month[1] < (len(mMONTHS) - 1):
                     daylabel = QLabel(unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(mMONTHS[self.month[1] + 1][1]) + "." + unicode(self.year))
                     daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
@@ -168,8 +172,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             i += 1
 
     def next_month(self):
-        self.d = (self.month[2] + self.d) % 7
-        if self.month[1] < 12:
+        self.d = (self.month[2] + self.d) % len(mDAYS)
+        if self.month[1] < (len(mMONTHS) - 1):
             self.month = mMONTHS[self.month[1] + 1]
         else:
             self.month = mMONTHS[1]
@@ -183,13 +187,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.month[1] > 1:
             self.month = mMONTHS[self.month[1] - 1]
         else:
-            self.month = mMONTHS[12]
+            self.month = mMONTHS[len(mMONTHS) - 1]
             self.year = self.year - 1
             if self.year % 4 == 0:
                 mMONTHS[2][2] = 29
             else:
                 mMONTHS[2][2] = 28
-        self.d = 7 - ((self.month[2] + (7 - self.d)) % 7)
+        self.d = len(mDAYS) - ((self.month[2] + (len(mDAYS) - self.d)) % len(mDAYS))
 
     @pyqtSignature("")
     def on_nextB_clicked(self):
