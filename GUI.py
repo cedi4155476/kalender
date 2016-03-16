@@ -131,25 +131,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def create_stories(self):
         i = 0
+        self.editbuttons = {}
+        self.deletebuttons = {}
         self.storyTW.setRowCount(len(self.storydatas))
         for story in self.storydatas:
             editwidget = QWidget()
             editlayout = QBoxLayout(2, editwidget)
             editwidget.setLayout(editlayout)
-            editbutton = QPushButton("bearbeiten")
+            editbutton = QPushButton("Bearbeiten")
+            editbutton.clicked.connect(self.edit_story)
             editlayout.addWidget(editbutton)
+            self.editbuttons.setdefault(editbutton, i+1)
 
             deletewidget = QWidget()
             deletelayout = QBoxLayout(2, deletewidget)
             deletewidget.setLayout(deletelayout)
-            deletebutton = QPushButton("bearbeiten")
+            deletebutton = QPushButton("Löschen")
+            deletebutton.clicked.connect(self.delete_story)
             deletelayout.addWidget(deletebutton)
+            self.deletebuttons.setdefault(deletebutton, i+1)
+
             self.storyTW.setItem(i, 0, self.getValidQTWI(unicode(story['titel'])))
             self.storyTW.setItem(i, 1, self.getValidQTWI(unicode(story['kurzinfo'])))
             self.storyTW.setItem(i, 2, self.getValidQTWI("Datei"))
             self.storyTW.setCellWidget(i, 3, editwidget)
             self.storyTW.setCellWidget(i, 4, deletewidget)
             i += 1
+
+    def delete_story(self):
+        id = self.deletebuttons[self.sender()]
+        self.c.execute('''DELETE FROM Geschichte WHERE id = {id}'''.format(id=id))
+        self.c.fetchone()
+        self.conn.commit()
+
+    def edit_story(self):
+        id = self.editbuttons[self.sender()]
+        self.c.execute('''SELECT id FROM Geschichte WHERE id = {id}'''.format(id=id))
+        print self.c.fetchone()
 
     def initialise_month(self):
         self.item = None

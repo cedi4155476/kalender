@@ -6,7 +6,6 @@ Module implementing Edit.
 
 from PyQt4.QtCore import pyqtSignature, QString, Qt
 from PyQt4.QtGui import QDialog
-from genre import Genre
 
 from ui_edit import Ui_Edit
 
