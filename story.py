@@ -15,17 +15,24 @@ class Story(QDialog, Ui_Story):
     """
     Class documentation goes here.
     """
-    def __init__(self, c, conn, parent=None):
+    def __init__(self, data, c, conn, parent=None):
         """
         Set all LineEdits if they already exist
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
+        self.data = data
         self.c = c
         self.conn = conn
 
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+
+        if data:
+            self.id = data['id']
+            self.pathLE.setText(self.getValidString(data['pfad']))
+            self.titelLE.setText(self.getValidString(data['titel']))
+            self.notizTE.insertPlainText(self.getValidString(data['kurzinfo']))
 
     def getValidString(self, value):
         if value:
@@ -53,7 +60,11 @@ class Story(QDialog, Ui_Story):
         title = unicode(self.titelLE.text())
         info = unicode(self.notizTE.toPlainText())
 
-        addstory = (None, title, info, path)
-        self.c.execute('''INSERT INTO Geschichte VALUES (?,?,?,?) ''', addstory)
+        if not self.data:
+            addstory = (None, title, info, path)
+            self.c.execute('''INSERT INTO Geschichte VALUES (?,?,?,?) ''', addstory)
+        else:
+            changestory = (title, path, info, self.id)
+            self.c.execute('''UPDATE Geschichte SET titel=?, pfad=?, kurzinfo=? WHERE id=?''', changestory)
 
         self.accept()

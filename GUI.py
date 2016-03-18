@@ -106,10 +106,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if action.whatsThis() == "close":
             QApplication.quit()
         elif action.whatsThis() == "addstory":
-            story = Story(self.c, self.conn, self)
+            story = Story(False, self.c, self.conn, self)
             ret = story.exec_()
             if ret == QDialog.Accepted:
                 self.conn.commit()
+                self.initialise_stories()
+                self.create_stories()
             else:
                 self.conn.rollback()
 
@@ -125,7 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.create_month()
 
     def initialise_stories(self):
-        self.c.execute('''SELECT titel, kurzinfo, pfad FROM Geschichte''')
+        self.c.execute('''SELECT id, titel, kurzinfo, pfad FROM Geschichte''')
         self.storydatas = self.c.fetchall()
         self.initialisedstories = True
 
@@ -133,6 +135,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         i = 0
         self.editbuttons = {}
         self.deletebuttons = {}
+        self.storyTW.setRowCount(0)  # Refresh table
         self.storyTW.setRowCount(len(self.storydatas))
         for story in self.storydatas:
             editwidget = QWidget()
@@ -141,7 +144,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             editbutton = QPushButton("Bearbeiten")
             editbutton.clicked.connect(self.edit_story)
             editlayout.addWidget(editbutton)
-            self.editbuttons.setdefault(editbutton, i+1)
+            self.editbuttons.setdefault(editbutton, [i, story['id']])
 
             deletewidget = QWidget()
             deletelayout = QBoxLayout(2, deletewidget)
@@ -149,7 +152,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             deletebutton = QPushButton("Löschen")
             deletebutton.clicked.connect(self.delete_story)
             deletelayout.addWidget(deletebutton)
-            self.deletebuttons.setdefault(deletebutton, i+1)
+            self.deletebuttons.setdefault(deletebutton, [i, story['id']])
 
             self.storyTW.setItem(i, 0, self.getValidQTWI(unicode(story['titel'])))
             self.storyTW.setItem(i, 1, self.getValidQTWI(unicode(story['kurzinfo'])))
@@ -159,15 +162,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             i += 1
 
     def delete_story(self):
-        id = self.deletebuttons[self.sender()]
+        id = self.deletebuttons[self.sender()][1]
         self.c.execute('''DELETE FROM Geschichte WHERE id = {id}'''.format(id=id))
         self.c.fetchone()
         self.conn.commit()
+        self.storyTW.removeRow(self.deletebuttons[self.sender()][0])
 
     def edit_story(self):
-        id = self.editbuttons[self.sender()]
-        self.c.execute('''SELECT id FROM Geschichte WHERE id = {id}'''.format(id=id))
-        print self.c.fetchone()
+        id = self.editbuttons[self.sender()][1]
+        self.c.execute('''SELECT id, titel, kurzinfo, pfad FROM Geschichte WHERE id = {id}'''.format(id=id))
+        story = Story(self.c.fetchone(), self.c, self.conn, self)
+        ret = story.exec_()
+        if ret == QDialog.Accepted:
+            self.conn.commit()
+            self.initialise_stories()
+            self.create_stories()
+        else:
+            self.conn.rollback()
 
     def initialise_month(self):
         self.item = None
