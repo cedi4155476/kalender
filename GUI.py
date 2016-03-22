@@ -11,6 +11,7 @@ from PyQt4.QtCore import *
 from ui_GUI import Ui_MainWindow
 from edit import Edit
 from story import Story
+from character import Character
 
 mDAYS = ["Montag",
          "Dienstag",
@@ -51,6 +52,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.make_connections()
         self.initialisedmonth = False
         self.initialisedstories = False
+        self.initialisedcharacters = False
+        self.on_tabWidget_currentChanged(self.tabWidget.currentIndex())
 
     def db_connect(self):
         """
@@ -106,14 +109,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if action.whatsThis() == "close":
             QApplication.quit()
         elif action.whatsThis() == "addstory":
-            story = Story(False, self.c, self.conn, self)
-            ret = story.exec_()
-            if ret == QDialog.Accepted:
-                self.conn.commit()
-                self.initialise_stories()
-                self.create_stories()
-            else:
-                self.conn.rollback()
+            self.add_story()
+        elif action.whatsThis() == "addcharacter":
+            self.add_character()
 
     def on_tabWidget_currentChanged(self, tab):
         if tab == 0:
@@ -122,6 +120,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.create_stories()
 
         elif tab == 1:
+            if not self.initialisedcharacters:
+                self.initialise_characters()
+            self.create_characters()
+
+        elif tab == 2:
             if not self.initialisedmonth:
                 self.initialise_month()
             self.create_month()
@@ -130,6 +133,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.c.execute('''SELECT id, titel, kurzinfo, pfad FROM Geschichte''')
         self.storydatas = self.c.fetchall()
         self.initialisedstories = True
+
+    @pyqtSignature("")
+    def on_storycreatePB_clicked(self):
+        self.add_story()
 
     def create_stories(self):
         i = 0
@@ -161,11 +168,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.storyTW.setCellWidget(i, 4, deletewidget)
             i += 1
 
+    def add_story(self):
+        story = Story(False, self.c, self.conn, self)
+        ret = story.exec_()
+        if ret == QDialog.Accepted:
+            self.conn.commit()
+            self.initialise_stories()
+            self.create_stories()
+        else:
+            self.conn.rollback()
+
     def delete_story(self):
         id = self.deletebuttons[self.sender()][1]
         self.c.execute('''DELETE FROM Geschichte WHERE id = {id}'''.format(id=id))
         self.c.fetchone()
         self.conn.commit()
+        self.initialise_stories()
         self.storyTW.removeRow(self.deletebuttons[self.sender()][0])
 
     def edit_story(self):
@@ -177,6 +195,76 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.conn.commit()
             self.initialise_stories()
             self.create_stories()
+        else:
+            self.conn.rollback()
+
+    def initialise_characters(self):
+        self.c.execute('''SELECT id, vorname, nachname, geburtstag, info FROM Charakter''')
+        self.characterdatas = self.c.fetchall()
+        self.initialisedcharacters = True
+
+    @pyqtSignature("")
+    def on_charactercreatePB_clicked(self):
+        self.add_character()
+
+    def create_characters(self):
+        i = 0
+        self.editbuttons = {}
+        self.deletebuttons = {}
+        self.characterTW.setRowCount(0)  # Refresh table
+        self.characterTW.setRowCount(len(self.characterdatas))
+        for character in self.characterdatas:
+            editwidget = QWidget()
+            editlayout = QBoxLayout(2, editwidget)
+            editwidget.setLayout(editlayout)
+            editbutton = QPushButton("Bearbeiten")
+            editbutton.clicked.connect(self.edit_character)
+            editlayout.addWidget(editbutton)
+            self.editbuttons.setdefault(editbutton, [i, character['id']])
+
+            deletewidget = QWidget()
+            deletelayout = QBoxLayout(2, deletewidget)
+            deletewidget.setLayout(deletelayout)
+            deletebutton = QPushButton("Löschen")
+            deletebutton.clicked.connect(self.delete_character)
+            deletelayout.addWidget(deletebutton)
+            self.deletebuttons.setdefault(deletebutton, [i, character['id']])
+
+            self.characterTW.setItem(i, 0, self.getValidQTWI(unicode(character['vorname'])))
+            self.characterTW.setItem(i, 1, self.getValidQTWI(unicode(character['nachname'])))
+            self.characterTW.setItem(i, 2, self.getValidQTWI(unicode(character['geburtstag'])))
+            self.characterTW.setItem(i, 3, self.getValidQTWI(unicode(character['info'])))
+            self.characterTW.setCellWidget(i, 4, editwidget)
+            self.characterTW.setCellWidget(i, 5, deletewidget)
+            i += 1
+
+    def add_character(self):
+        character = Character(False, self.c, self.conn, self)
+        ret = character.exec_()
+        if ret == QDialog.Accepted:
+            self.conn.commit()
+            self.initialise_characters()
+            self.create_characters()
+        else:
+            self.conn.rollback()
+
+    def delete_character(self):
+        id = self.deletebuttons[self.sender()][1]
+        self.c.execute('''DELETE FROM Charakter WHERE id = {id}'''.format(id=id))
+        self.c.fetchone()
+        self.conn.commit()
+        self.initialise_characters()
+        self.characterTW.removeRow(self.deletebuttons[self.sender()][0])
+
+    def edit_character(self):
+        id = self.editbuttons[self.sender()][1]
+        self.c.execute('''SELECT id, vorname, nachname, geburtstag, info FROM Charakter WHERE id = {id}'''.format(id=id))
+        character = Character(self.c.fetchone(), self.c, self.conn, self)
+        ret = character.exec_()
+        if ret == QDialog.Accepted:
+            self.conn.commit()
+            self.initialise_characters()
+            self.create_characters()
         else:
             self.conn.rollback()
 

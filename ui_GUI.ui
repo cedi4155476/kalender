@@ -52,6 +52,30 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="storycreatePB">
+            <property name="text">
+             <string>Neue Geschichte</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QTableWidget" name="storyTW">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
@@ -122,6 +146,95 @@
           <column>
            <property name="text">
             <string>Kurzinfo</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Löschen</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Charaktere</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QPushButton" name="charactercreatePB">
+            <property name="text">
+             <string>Neuer Charakter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="characterTW">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showDropIndicator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropOverwriteMode">
+           <bool>false</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Vorname</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Nachname</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Geburtsdatum</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Info</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Bearbeiten</string>
            </property>
           </column>
           <column>
