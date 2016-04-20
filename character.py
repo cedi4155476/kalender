@@ -51,10 +51,21 @@ class Character(QDialog, Ui_Character):
         info = unicode(self.infoTE.toPlainText())
 
         if not self.data:
-            addstory = (None, vorname, nachname, geburtstag, info)
-            self.c.execute('''INSERT INTO Charakter VALUES (?,?,?,?,?) ''', addstory)
+            addcharacter = (None, vorname, nachname, geburtstag, info)
+            geburtstag_fullname = "Geburtstag von " + vorname + " " + nachname
+            addnotiz = (None, geburtstag, 0, "Geburtstag", geburtstag_fullname)
+            self.c.execute('''INSERT INTO Charakter VALUES (?,?,?,?,?) ''', addcharacter)
+            self.c.execute('''INSERT INTO Notiz VALUES (?,?,?,?,?) ''', addnotiz)
+
+            fullname = (vorname, nachname)
+            self.c.execute('''SELECT id FROM Charakter WHERE vorname=? AND nachname=?''', fullname)
+            character_id = self.c.fetchone()['id']
+            self.c.execute('''SELECT id FROM Notiz WHERE inhalt=?''', (geburtstag_fullname,))
+            notiz_id = self.c.fetchone()['id']
+            addbind = (notiz_id, character_id)
+            self.c.execute('''INSERT INTO Notiz_Charakter VALUES (?,?) ''', addbind)
         else:
-            changestory = (vorname, nachname, geburtstag, info, self.id)
-            self.c.execute('''UPDATE Charakter SET vorname=?, nachname=?, geburstag=?, info=? WHERE id=?''', changestory)
+            changecharacter = (vorname, nachname, geburtstag, info, self.id)
+            self.c.execute('''UPDATE Charakter SET vorname=?, nachname=?, geburstag=?, info=? WHERE id=?''', changecharacter)
 
         self.accept()

@@ -312,22 +312,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             daywidget.setLayout(layout)
             if i < self.d:
                 if self.month[1] > 1:
-                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[self.month[1] - 1][1]) + "." + unicode(self.year))
+                    date = unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[self.month[1] - 1][1]) + "." + unicode(self.year)
+                    daylabel = QLabel(date)
                     daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
-                    daylabel = QLabel(unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[(len(mMONTHS) - 1)][1]) + "." + unicode(self.year))
+                    date = unicode(last_dates[i] + 1) + "." + unicode(mMONTHS[(len(mMONTHS) - 1)][1]) + "." + unicode(self.year)
+                    daylabel = QLabel(date)
                     daylabel.setStyleSheet("QLabel { color : gray; }")
             elif i >= all_days - next_days:
                 if all_days - i == len(mDAYS):
                     return
                 if self.month[1] < (len(mMONTHS) - 1):
-                    daylabel = QLabel(unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(mMONTHS[self.month[1] + 1][1]) + "." + unicode(self.year))
+                    date = unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(mMONTHS[self.month[1] + 1][1]) + "." + unicode(self.year)
+                    daylabel = QLabel(date)
                     daylabel.setStyleSheet("QLabel { color : gray; }")
                 else:
-                    daylabel = QLabel(unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(mMONTHS[1][1]) + "." + unicode(self.year))
+                    date = unicode(i - self.month[2] - (self.d - 1)) + "." + unicode(mMONTHS[1][1]) + "." + unicode(self.year)
+                    daylabel = QLabel(date)
                     daylabel.setStyleSheet("QLabel { color : gray; }")
             else:
-                daylabel = QLabel(unicode(i - (self.d - 1)) + "." + unicode(self.month[1]) + "." + unicode(self.year))
+                date = unicode(i - (self.d - 1)) + "." + unicode(self.month[1]) + "." + unicode(self.year)
+                daylabel = QLabel(date)
+
+            self.c.execute('''SELECT geburtstag FROM Charakter''')
+            birthdays = self.c.fetchall()
+            for birthday in birthdays:
+                if date == birthday['geburtstag']:
+                    daylabel.setStyleSheet("QLabel { color : red; }")
             layout.addWidget(daylabel)
             self.days.append(daywidget)
             self.monthTW.setCellWidget(x, y, daywidget)
