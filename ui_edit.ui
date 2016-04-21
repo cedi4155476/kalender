@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>299</width>
-    <height>488</height>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,11 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QComboBox" name="weltCB">
+     <item>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
      <item>
       <property name="text">
        <string>Menschenwelt</string>
@@ -62,17 +67,17 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QScrollArea" name="storySA">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="storyW">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>279</width>
-        <height>55</height>
+        <width>285</width>
+        <height>70</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4"/>
@@ -87,17 +92,17 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea_2">
+    <widget class="QScrollArea" name="characterSA">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents_2">
+     <widget class="QWidget" name="characterW">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>279</width>
-        <height>55</height>
+        <width>285</width>
+        <height>70</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5"/>
@@ -137,7 +142,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>

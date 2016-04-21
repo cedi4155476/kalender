@@ -334,11 +334,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 date = unicode(i - (self.d - 1)) + "." + unicode(self.month[1]) + "." + unicode(self.year)
                 daylabel = QLabel(date)
 
-            self.c.execute('''SELECT geburtstag FROM Charakter''')
-            birthdays = self.c.fetchall()
-            for birthday in birthdays:
-                if date == birthday['geburtstag']:
-                    daylabel.setStyleSheet("QLabel { color : red; }")
+            self.c.execute('''SELECT tag, notiz FROM Notiz''')
+            notizen = self.c.fetchall()
+            for notiz in notizen:
+                if date == notiz['tag']:
+                    if notiz['notiz'] == "Geburtstag":
+                        daylabel.setStyleSheet("QLabel { color : red; }")
+                    else:
+                        daylabel.setStyleSheet("QLabel { color : blue; }")
+
             layout.addWidget(daylabel)
             self.days.append(daywidget)
             self.monthTW.setCellWidget(x, y, daywidget)

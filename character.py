@@ -49,23 +49,25 @@ class Character(QDialog, Ui_Character):
         nachname = unicode(self.nachnameLE.text())
         geburtstag = unicode(self.geburtstagLE.text())
         info = unicode(self.infoTE.toPlainText())
+        geburtstag_fullname = "Geburtstag von " + vorname + " " + nachname
 
         if not self.data:
             addcharacter = (None, vorname, nachname, geburtstag, info)
-            geburtstag_fullname = "Geburtstag von " + vorname + " " + nachname
-            addnotiz = (None, geburtstag, 0, "Geburtstag", geburtstag_fullname)
+            addnotiz = (None, vorname + " Geburtstag", geburtstag, 0, "Geburtstag", geburtstag_fullname)
             self.c.execute('''INSERT INTO Charakter VALUES (?,?,?,?,?) ''', addcharacter)
-            self.c.execute('''INSERT INTO Notiz VALUES (?,?,?,?,?) ''', addnotiz)
+            character_id = self.c.lastrowid
+            self.c.execute('''INSERT INTO Notiz VALUES (?,?,?,?,?,?) ''', addnotiz)
+            notiz_id = self.c.lastrowid
 
-            fullname = (vorname, nachname)
-            self.c.execute('''SELECT id FROM Charakter WHERE vorname=? AND nachname=?''', fullname)
-            character_id = self.c.fetchone()['id']
-            self.c.execute('''SELECT id FROM Notiz WHERE inhalt=?''', (geburtstag_fullname,))
-            notiz_id = self.c.fetchone()['id']
             addbind = (notiz_id, character_id)
             self.c.execute('''INSERT INTO Notiz_Charakter VALUES (?,?) ''', addbind)
         else:
             changecharacter = (vorname, nachname, geburtstag, info, self.id)
-            self.c.execute('''UPDATE Charakter SET vorname=?, nachname=?, geburstag=?, info=? WHERE id=?''', changecharacter)
+            self.c.execute('''UPDATE Charakter SET vorname=?, nachname=?, geburtstag=?, info=? WHERE id=?''', changecharacter)
+
+            self.c.execute('''SELECT id FROM Notiz WHERE inhalt=?''', (geburtstag_fullname,))
+            notiz_id = self.c.fetchone()['id']
+            changenotiz = (geburtstag, notiz_id)
+            self.c.execute('''UPDATE Notiz SET tag=? WHERE id=?''', changenotiz)
 
         self.accept()
