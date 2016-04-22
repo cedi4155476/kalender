@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_edit.ui'
 #
-# Created: Thu Apr 21 13:36:09 2016
+# Created: Fri Apr 22 11:31:45 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,7 +27,7 @@ class Ui_Edit(object):
     def setupUi(self, Edit):
         Edit.setObjectName(_fromUtf8("Edit"))
         Edit.setWindowModality(QtCore.Qt.ApplicationModal)
-        Edit.resize(299, 514)
+        Edit.resize(299, 516)
         self.verticalLayout = QtGui.QVBoxLayout(Edit)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.weltCB = QtGui.QComboBox(Edit)
@@ -55,12 +55,12 @@ class Ui_Edit(object):
         self.storySA = QtGui.QScrollArea(Edit)
         self.storySA.setWidgetResizable(True)
         self.storySA.setObjectName(_fromUtf8("storySA"))
-        self.storyW = QtGui.QWidget()
-        self.storyW.setGeometry(QtCore.QRect(0, 0, 285, 70))
-        self.storyW.setObjectName(_fromUtf8("storyW"))
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.storyW)
+        self.geschichteW = QtGui.QWidget()
+        self.geschichteW.setGeometry(QtCore.QRect(0, 0, 285, 70))
+        self.geschichteW.setObjectName(_fromUtf8("geschichteW"))
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.geschichteW)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-        self.storySA.setWidget(self.storyW)
+        self.storySA.setWidget(self.geschichteW)
         self.verticalLayout.addWidget(self.storySA)
         self.label_5 = QtGui.QLabel(Edit)
         self.label_5.setObjectName(_fromUtf8("label_5"))
@@ -88,14 +88,25 @@ class Ui_Edit(object):
         self.inhaltTE = QtGui.QTextEdit(Edit)
         self.inhaltTE.setObjectName(_fromUtf8("inhaltTE"))
         self.verticalLayout.addWidget(self.inhaltTE)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.deleteBT = QtGui.QPushButton(Edit)
+        self.deleteBT.setObjectName(_fromUtf8("deleteBT"))
+        self.horizontalLayout_2.addWidget(self.deleteBT)
         self.buttonBox = QtGui.QDialogButtonBox(Edit)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.buttonBox.sizePolicy().hasHeightForWidth())
+        self.buttonBox.setSizePolicy(sizePolicy)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setCenterButtons(False)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.verticalLayout.addWidget(self.buttonBox)
+        self.horizontalLayout_2.addWidget(self.buttonBox)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.retranslateUi(Edit)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), Edit.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), Edit.reject)
         QtCore.QMetaObject.connectSlotsByName(Edit)
 
@@ -110,4 +121,5 @@ class Ui_Edit(object):
         self.label_5.setText(_translate("Edit", "Charaktere:", None))
         self.label_3.setText(_translate("Edit", "Notizen:", None))
         self.label_2.setText(_translate("Edit", "Inhalt:", None))
+        self.deleteBT.setText(_translate("Edit", "Löschen", None))
 

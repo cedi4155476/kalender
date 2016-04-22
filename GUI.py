@@ -393,7 +393,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         edit = Edit(self.c, self.conn, day, date, self)
         ret = edit.exec_()
-        if ret == QDialog.Accepted:
-            self.conn.commit()
-        else:
-            self.conn.rollback()
+        self.conn.commit()
