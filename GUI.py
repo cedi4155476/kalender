@@ -338,10 +338,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             notizen = self.c.fetchall()
             for notiz in notizen:
                 if date == notiz['tag']:
-                    if notiz['notiz'] == "Geburtstag":
+                    if notiz['notiz'] == "Geburt":
                         daylabel.setStyleSheet("QLabel { color : red; }")
                     else:
                         daylabel.setStyleSheet("QLabel { color : blue; }")
+            self.c.execute('''SELECT geburtstag FROM Charakter''')
+            characters = self.c.fetchall()
+            for character in characters:
+                bd = character['geburtstag']
+                cday, cmonth, cyear = bd.split('.')
+                day, month, year = date.split('.')
+                if year > cyear:
+                    if (cday + "." + cmonth) == (day + "." + month):
+                        daylabel.setStyleSheet("QLabel { color : green; }")
 
             layout.addWidget(daylabel)
             self.days.append(daywidget)

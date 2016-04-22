@@ -47,7 +47,7 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Gebursttag:</string>
+        <string>Geburtstag:</string>
        </property>
       </widget>
      </item>

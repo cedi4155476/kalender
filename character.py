@@ -49,11 +49,11 @@ class Character(QDialog, Ui_Character):
         nachname = unicode(self.nachnameLE.text())
         geburtstag = unicode(self.geburtstagLE.text())
         info = unicode(self.infoTE.toPlainText())
-        geburtstag_fullname = "Geburtstag von " + vorname + " " + nachname
+        geburtstag_fullname = "Geburt von " + vorname + " " + nachname
 
         if not self.data:
             addcharacter = (None, vorname, nachname, geburtstag, info)
-            addnotiz = (None, vorname + " Geburtstag", geburtstag, 0, "Geburtstag", geburtstag_fullname)
+            addnotiz = (None, vorname + " Geburt", geburtstag, 0, "Geburt", geburtstag_fullname)
             self.c.execute('''INSERT INTO Charakter VALUES (?,?,?,?,?) ''', addcharacter)
             character_id = self.c.lastrowid
             self.c.execute('''INSERT INTO Notiz VALUES (?,?,?,?,?,?) ''', addnotiz)

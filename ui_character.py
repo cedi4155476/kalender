@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_character.ui'
 #
-# Created: Tue Mar 22 12:48:54 2016
+# Created: Fri Apr 22 13:51:04 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -77,6 +77,6 @@ class Ui_Character(object):
         Character.setWindowTitle(_translate("Character", "Charakter hinzufügen", None))
         self.label.setText(_translate("Character", "Vorname:", None))
         self.label_3.setText(_translate("Character", "Nachname:", None))
-        self.label_4.setText(_translate("Character", "Gebursttag:", None))
+        self.label_4.setText(_translate("Character", "Geburtstag:", None))
         self.label_2.setText(_translate("Character", "Info:", None))
 

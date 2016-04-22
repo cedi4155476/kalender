@@ -57,7 +57,8 @@ class Edit(QDialog, Ui_Edit):
         self.c.execute('''SELECT * FROM Notiz WHERE tag=?''', (self.date,))
         notizen = self.c.fetchall()
         for notiz in notizen:
-            self.titelCB.addItem(notiz['titel'], QVariant(notiz))
+            if notiz['notiz'] != 'Geburt':
+                self.titelCB.addItem(notiz['titel'], QVariant(notiz))
 
     def getValidString(self, value):
         if value:
